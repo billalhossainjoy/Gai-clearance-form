@@ -5,14 +5,26 @@ import { Form } from "@/components/ui/form";
 import { FormFieldType } from "@/constant";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useAppDispatch } from "@/store/store";
+import { changeAdminPassword } from "@/store/admin/admin.slice";
+import { useToast } from "@/hooks/use-toast";
 
 const SettingsPage: React.FC = () => {
+  const { toast } = useToast();
+  const dispatch = useAppDispatch();
   const form = useForm<AuthorPasswordType>({
     resolver: zodResolver(authorPassword),
   });
 
   const onSubmit = (data: AuthorPasswordType) => {
-    console.log(data);
+    dispatch(changeAdminPassword(data)).then((res) => {
+      if (res.payload.message) {
+        toast({
+          title: "Update",
+          description: res.payload.message,
+        });
+      }
+    });
   };
 
   return (

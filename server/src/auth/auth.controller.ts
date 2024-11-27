@@ -1,11 +1,13 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
   Param,
   Post,
+  Put,
   Req,
   Res,
   UseGuards,
@@ -24,6 +26,7 @@ export class AuthController {
   ) {}
 
   @Post('register')
+  @UseGuards(AuthGuard('jwt'))
   async register(@Body() body: Prisma.AuthorCreateInput, @Res() res: Response) {
     try {
       const newAuthor = await this.authService.register(body);
@@ -33,13 +36,14 @@ export class AuthController {
       });
 
       res.cookie('token', token, {
-        expires: new Date(Date.now() + 3600000), // 1 hour
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
       });
-      return res
-        .status(HttpStatus.CREATED)
-        .json({ email: newAuthor.email, token });
+      return res.status(HttpStatus.CREATED).json({
+        ...newAuthor,
+        token,
+      });
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -50,11 +54,11 @@ export class AuthController {
   login(@Req() req: Request, @Res() res: Response) {
     try {
       const token = this.jwt.sign({ id: req.user.id, email: req.user.email });
-            res.cookie('token', token, {
-              expires: new Date(Date.now() + 3600000), // 1 hour
-              httpOnly: true,
-              secure: process.env.NODE_ENV === 'production',
-            });
+      res.cookie('token', token, {
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+      });
       return res.status(HttpStatus.OK).json({ email: req.user.email, token });
     } catch (error) {
       throw new HttpException('Login Failed', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -85,12 +89,47 @@ export class AuthController {
 
   @Get('authors')
   @UseGuards(AuthGuard('jwt'))
-  async authors() {
+  async authors(@Req() req: Request) {
     try {
-      const author = await this.authService.authors();
-      return author;
+      const userId = req.user.id;
+      const authors = await this.authService.authors(userId);
+      return authors;
     } catch (error) {
+      console.log(error);
       throw new HttpException('logout Failed', HttpStatus.EXPECTATION_FAILED);
     }
+  }
+
+  @Delete('delete/:id')
+  @UseGuards(AuthGuard('jwt'))
+  async delete(@Param('id') id: string) {
+    try {
+      const author = await this.authService.delete(id);
+      return author;
+    } catch (error) {
+      throw new HttpException('Deletion Failed', HttpStatus.EXPECTATION_FAILED);
+    }
+  }
+
+  @Put('update-password')
+  @UseGuards(AuthGuard('jwt'))
+  async changePassword(
+    @Req() req: Request,
+    @Body() body: { password: string },
+  ) {
+    try {
+      await this.authService.changePassword(req.user.id, body.password);
+      return {
+        message: 'Password updated successfully',
+      };
+    } catch (error) {
+      throw new HttpException('Deletion Failed', HttpStatus.EXPECTATION_FAILED);
+    }
+  }
+
+  @Get('user')
+  @UseGuards(AuthGuard('jwt'))
+  async get(@Req() req: Request) {
+    return req.user;
   }
 }

@@ -1,5 +1,5 @@
 export const sliderItem = [
-  { label: "New Student", path: "/admin", accessor: ["ADMIN", "STAFF"] },
+  { label: "Student entry", path: "/admin", accessor: ["ADMIN", "STAFF"] },
   {
     label: "All student",
     path: "/admin/all-student",

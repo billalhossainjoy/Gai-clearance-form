@@ -1,8 +1,23 @@
 import { LogOut, Menu } from "lucide-react";
 import { Button } from "../ui/button";
 import gaiLogo from "/gai.jpg";
+import { useAppDispatch } from "@/store/store";
+import { logoutAdmin, resetAuth } from "@/store/auth/auth.slice";
+import { useNavigate } from "react-router-dom";
 
 const DashboardHeader: React.FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const logoutHandler = () => {
+    dispatch(logoutAdmin()).then((res) => {
+      if (res.payload.message === "Logged out") {
+        dispatch(resetAuth());
+        navigate("/auth");
+      }
+    });
+  };
+
   return (
     <div className="h-full">
       <div className="h-full flex">
@@ -18,7 +33,7 @@ const DashboardHeader: React.FC = () => {
           </div>
         </div>
         <div className="w-full flex justify-end container items-center h-full px-4">
-          <Button>
+          <Button onClick={() => logoutHandler()}>
             <LogOut /> logout
           </Button>
         </div>

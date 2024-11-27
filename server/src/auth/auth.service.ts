@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
@@ -17,8 +18,24 @@ export class AuthService {
         throw new HttpException('Email already exists', HttpStatus.CONFLICT);
       }
 
+      const hashedPassword = bcrypt.hashSync(author.email, 10);
+
       return await this.prisma.author.create({
-        data: author,
+        data: {
+          ...author,
+          isActive: true,
+          password: hashedPassword,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          password: false,
+          role: true,
+          isActive: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       });
     } catch (error) {
       throw new HttpException(
@@ -33,14 +50,13 @@ export class AuthService {
       const user = await this.prisma.author.findUnique({
         where: {
           email: username,
-          password: password,
         },
       });
       if (!user)
-        throw new HttpException(
-          'invalid credentials.',
-          HttpStatus.UNAUTHORIZED,
-        );
+        throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid)
+        throw new HttpException('Invalid Password', HttpStatus.UNAUTHORIZED);
       return user;
     } catch (error) {
       throw new HttpException(
@@ -58,6 +74,7 @@ export class AuthService {
         },
         select: {
           id: true,
+          name: true,
           email: true,
           password: false,
           role: true,
@@ -75,11 +92,17 @@ export class AuthService {
     }
   }
 
-  async authors() {
+  async authors(id: string) {
     try {
       return await this.prisma.author.findMany({
+        where: {
+          id: {
+            not: id,
+          },
+        },
         select: {
           id: true,
+          name: true,
           email: true,
           password: false,
           role: true,
@@ -91,6 +114,46 @@ export class AuthService {
     } catch (error) {
       throw new HttpException(
         `Error fetching authors: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async delete(id: string) {
+    try {
+      const existingUser = await this.prisma.author.findUnique({
+        where: { id },
+      });
+      if (!existingUser)
+        throw new HttpException('Author not fount', HttpStatus.NOT_FOUND);
+
+      return await this.prisma.author.delete({
+        where: { id },
+      });
+    } catch (error) {
+      throw new HttpException(
+        `Delete author: ${error.message}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+  async changePassword(id: string, password: string) {
+    try {
+      const existingUser = await this.prisma.author.findUnique({
+        where: { id },
+      });
+      if (!existingUser)
+        throw new HttpException('Author not fount', HttpStatus.NOT_FOUND);
+
+      const hashedPassword = bcrypt.hashSync(password, 10);
+      return await this.prisma.author.update({
+        where: { id },
+        data: { password: hashedPassword },
+
+      });
+    } catch (error) {
+      throw new HttpException(
+        `Delete author: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

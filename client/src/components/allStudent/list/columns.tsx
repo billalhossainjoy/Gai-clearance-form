@@ -1,4 +1,6 @@
-import {  createColumnHelper } from "@tanstack/react-table";
+
+import { createColumnHelper } from "@tanstack/react-table";
+import StudentActionButton from "./action";
 
 export interface Student {
   id: string;
@@ -7,7 +9,7 @@ export interface Student {
   roll: number;
   registrationNo: number;
   session: string;
-  shift: string;
+  shift: "FIRST" | "SECOND";
   active: boolean;
 }
 
@@ -46,5 +48,9 @@ export const studentColumns = [
   column.accessor("active", {
     header: "Active",
     cell: (row) => (row.getValue() ? "Active" : "Block"),
+  }),
+  column.display({
+    id: "action",
+    cell: ({ row }) => <StudentActionButton id={row.original.id} />,
   }),
 ];

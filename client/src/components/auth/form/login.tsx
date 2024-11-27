@@ -3,18 +3,44 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginSchemaType } from "@/schema/auth.schema";
 import { Form } from "@/components/ui/form";
 import gaiLogo from "/gai.jpg";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader } from "lucide-react";
 import { FormFieldType } from "@/constant";
 import CustomForm from "@/components/common/FormField";
 import { Button } from "@/components/ui/button";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { getCurrentAdmin, loginAdmin } from "@/store/auth/auth.slice";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm: React.FC = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { isLoading } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const form = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginSchemaType) => {
-    console.log(data);
+  const onSubmit = async (data: LoginSchemaType) => {
+    dispatch(loginAdmin(data)).then((res) => {
+      if (res.payload.email === data.identifier) {
+        toast({
+          title: "Login successfully",
+        });
+        dispatch(getCurrentAdmin()).then((data) => {
+          if (data.payload.email === res.payload.email) {
+            navigate("/admin");
+          }
+        });
+      }
+      if (res.payload.statusCode >= 400) {
+        toast({
+          title: "Login Failed",
+          description: res.payload.message.split(":")[1],
+          variant: "destructive",
+        });
+      }
+    });
   };
 
   return (
@@ -44,7 +70,17 @@ const LoginForm: React.FC = () => {
           inputType={FormFieldType.PASSWORD}
           label="Password"
         />
-        <Button className="w-full">Login</Button>
+        <Button className="w-full">
+          {isLoading ? (
+            <span className="flex gap-3 items-center">
+              {" "}
+              <Loader className="animate-spin" />
+              Loading...
+            </span>
+          ) : (
+            "Login"
+          )}
+        </Button>
       </Form>
     </form>
   );

@@ -8,6 +8,25 @@ export class StudentService {
 
   async createStudent(student: Prisma.StudentCreateInput) {
     try {
+      const existingStudent = await this.prisma.student.findMany({
+        where: {
+          OR: [
+            {
+              roll: student.roll,
+            },
+            {
+              registrationNo: student.registrationNo,
+            },
+          ],
+        },
+      });
+
+      if (existingStudent.length > 0)
+        throw new HttpException(
+          'Roll or registration are already in use. ',
+          HttpStatus.CONFLICT,
+        );
+
       const newStudent = await this.prisma.student.create({
         data: student,
       });
@@ -43,6 +62,7 @@ export class StudentService {
 
       return updatedStudent;
     } catch (error) {
+      console.log(error)
       throw new HttpException(
         `Error updating student: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -94,7 +114,6 @@ export class StudentService {
       const existingStudent = await this.prisma.student.findUnique({
         where: { roll },
       });
-
 
       if (!existingStudent)
         throw new HttpException('Student not found. ', HttpStatus.NOT_FOUND);

@@ -21,7 +21,7 @@ const DashboardSlider: React.FC = () => {
             className={cn(
               "m-4 p-4 bg-gray-200 rounded hover:bg-gray-300 transition-all duration-300 cursor-pointer",
               {
-                "bg-muted-foreground text-white hover:text-black font-bold": pathname === item.path,
+                "bg-primary text-white hover:text-black font-bold": pathname === item.path,
               }
             )}
             onClick={() => navigate(item.path)}

@@ -1,4 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table";
+import DeleteAction from "./deleteAction";
 
 export interface AccountUsers {
   id: string;
@@ -20,11 +21,21 @@ export const accountUsersColumns = [
     cell: (row) => row.getValue(),
   }),
   column.accessor("email", {
-    header: "Technology",
+    header: "Email",
     cell: (row) => row.getValue(),
   }),
   column.accessor("role", {
-    header: "Roll",
-    cell: (row) => row.getValue(),
+    header: "Role",
+    cell: (row) => (
+      <span className="capitalize">
+        {row.getValue() === "ADMIN" ? "Admin" : "Staff"}
+      </span>
+    ),
+  }),
+  column.display({
+    header: "Actions",
+    cell: ({row}) => {
+      return <DeleteAction id={row.original.id} role={row.original.role} />;
+    },
   }),
 ];

@@ -1,8 +1,10 @@
 import LoginForm from "@/components/auth/form/login";
 import gaiLogo from "/gai.jpg";
 import { LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AuthLayout: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <div className=" h-screen w-full">
       <div>
@@ -13,7 +15,10 @@ const AuthLayout: React.FC = () => {
               Dash <span className="text-primary">board</span>
             </h1>
           </div>
-          <div className="flex text-primary gap-1 items-center">
+          <div
+            className="flex text-primary gap-1 items-center cursor-pointer"
+            onClick={() => navigate('/')}
+          >
             <LogOut className="w-6 " />
             <span className="text-lg font-bold"> Exit</span>
           </div>

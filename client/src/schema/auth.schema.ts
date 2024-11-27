@@ -8,7 +8,8 @@ export const loginSchema = z.object({
 export const newAdminSchema = z.object({
   name: z.string(),
   email: z.string().email(),
-  role: z.enum(["ADMIN", "STAFF"])
+  role: z.enum(["ADMIN", "STAFF"]),
+  isActive: z.string().optional(),
 });
 
 export type LoginSchemaType = z.infer<typeof loginSchema>;

@@ -6,25 +6,63 @@ import NewStudentPage from "./pages/Dashboard/newStudent";
 import AllStudentsPage from "./pages/Dashboard/allStudents";
 import AccountPage from "./pages/Dashboard/account";
 import SettingsPage from "./pages/Dashboard/settings";
+import { Toaster } from "./components/ui/toaster";
 import { useEffect } from "react";
-import ApiClient from "./lib/apiClient";
+import { useAppDispatch, useAppSelector } from "./store/store";
+import { getCurrentAdmin } from "./store/auth/auth.slice";
+import { Loader } from "lucide-react";
+import Protected from "./components/auth/protected";
 
 const App: React.FC = () => {
-  console.log(import.meta.env.VITE_REST_API);
+  const { isLoading, authData, isAuthenticated } = useAppSelector(
+    (state) => state.auth
+  );
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
-    ApiClient.get("/student?roll=652750").then((res) => console.log(res));
-  }, []);
+    dispatch(getCurrentAdmin());
+  }, [dispatch]);
+
+  if (isLoading) {
+    return (
+      <div>
+        <div className="flex justify-center items-center h-screen">
+          <div className="w-12 h-12 text-primary-500">
+            <Loader className="animate-spin text-primary w-10 h-10" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <Routes>
-      <Route index element={<ClientLayout />} />
-      <Route path="auth" element={<AuthLayout />} />
-      <Route path="admin" element={<DashboardLayout />}>
-        <Route index element={<NewStudentPage />} />
-        <Route path="/admin/all-student" element={<AllStudentsPage />} />
-        <Route path="/admin/account" element={<AccountPage />} />
-        <Route path="/admin/settings" element={<SettingsPage />} />
-      </Route>
-    </Routes>
+    <div>
+      <Routes>
+        <Route index element={<ClientLayout />} />
+        <Route
+          path="auth"
+          element={
+            <Protected isAuthenticated={isAuthenticated} authData={authData}>
+              <AuthLayout />
+            </Protected>
+          }
+        />
+        <Route
+          path="admin"
+          element={
+            <Protected isAuthenticated={isAuthenticated} authData={authData}>
+              <DashboardLayout />
+            </Protected>
+          }
+        >
+          <Route index element={<NewStudentPage />} />
+          <Route path="/admin/all-student" element={<AllStudentsPage />} />
+          <Route path="/admin/account" element={<AccountPage />} />
+          <Route path="/admin/settings" element={<SettingsPage />} />
+        </Route>
+      </Routes>
+      <Toaster />
+    </div>
   );
 };
 export default App;

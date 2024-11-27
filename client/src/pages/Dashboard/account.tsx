@@ -7,14 +7,36 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { adminTypeOptions } from "@/components/constaint";
 import AllAccountAdmins from "@/components/Account/accountUsers";
+import { registerAdmin } from "@/store/admin/admin.slice";
+import { useAppDispatch } from "@/store/store";
+import { useToast } from "@/hooks/use-toast";
 
 const AccountPage: React.FC = () => {
+  const { toast } = useToast();
+  const dispatch = useAppDispatch();
   const form = useForm<NewAdminSchemaType>({
     resolver: zodResolver(newAdminSchema),
   });
 
   const onSubmit = (data: NewAdminSchemaType) => {
-    console.log(data);
+    dispatch(registerAdmin(data)).then((res) => {
+      if (res.payload.name === data.name) {
+        toast({
+          title: "Success",
+          description:
+            res.payload.name +
+            "added successfully as " +
+            (res.payload.role === "ADMIN" ? " an admin" : " a staff"),
+        });
+      }
+      if (res.payload.statusCode >= 400) {
+        toast({
+          title: "Error",
+          variant: "destructive",
+          description: res.payload.message.split(':')[1],
+        });
+      }
+    });
   };
 
   return (

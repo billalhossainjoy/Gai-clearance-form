@@ -57,16 +57,6 @@ export class StudentController {
     }
   }
 
-  @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
-  async getStudent(@Param('id') id: string) {
-    try {
-      return await this.studentService.student(id);
-    } catch (error) {
-      throw new HttpException('fetch failed', HttpStatus.EXPECTATION_FAILED);
-    }
-  }
-
   @Get('all')
   @UseGuards(AuthGuard('jwt'))
   async getStudents() {
@@ -77,10 +67,20 @@ export class StudentController {
     }
   }
 
+  @Get(':id')
+  @UseGuards(AuthGuard('jwt'))
+  async getStudent(@Param('id') id: string) {
+    try {
+      return await this.studentService.student(id);
+    } catch (error) {
+      throw new HttpException('fetch failed', HttpStatus.EXPECTATION_FAILED);
+    }
+  }
+
   @Get()
   async getStudentByRoll(@Query('roll') roll: string) {
     try {
-      const rollNumber = parseInt(roll,10);
+      const rollNumber = parseInt(roll, 10);
       return await this.studentService.studentByRoll(rollNumber);
     } catch (error) {
       throw new HttpException('not found', HttpStatus.NOT_FOUND);
