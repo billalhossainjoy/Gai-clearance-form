@@ -39,6 +39,7 @@ export class AuthController {
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
+        sameSite:"none",
       });
       return res.status(HttpStatus.CREATED).json({
         ...newAuthor,
@@ -57,6 +58,7 @@ export class AuthController {
       res.cookie('token', token, {
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
         httpOnly: true,
+        sameSite: 'none',
         secure: process.env.NODE_ENV === 'production',
       });
       return res.status(HttpStatus.OK).json({ email: req.user.email, token });
