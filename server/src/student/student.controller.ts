@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
@@ -66,7 +67,7 @@ export class StudentController {
     }
   }
 
-  @Get()
+  @Get('all')
   @UseGuards(AuthGuard('jwt'))
   async getStudents() {
     try {
@@ -76,10 +77,11 @@ export class StudentController {
     }
   }
 
-  @Get('roll/:roll')
-  async getStudentByRoll(@Param('roll') roll: string) {
+  @Get()
+  async getStudentByRoll(@Query('roll') roll: string) {
     try {
-      return await this.studentService.studentByRoll(roll);
+      const rollNumber = parseInt(roll,10);
+      return await this.studentService.studentByRoll(rollNumber);
     } catch (error) {
       throw new HttpException('not found', HttpStatus.NOT_FOUND);
     }

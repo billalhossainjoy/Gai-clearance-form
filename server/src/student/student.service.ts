@@ -89,13 +89,12 @@ export class StudentService {
       );
     }
   }
-  async studentByRoll(roll: string) {
+  async studentByRoll(roll: number) {
     try {
-      // const existingStudent = await this.prisma.student.findUnique({
-      //   where: { roll: Number(roll) },
-      // });
+      const existingStudent = await this.prisma.student.findUnique({
+        where: { roll },
+      });
 
-      const existingStudent = null;
 
       if (!existingStudent)
         throw new HttpException('Student not found. ', HttpStatus.NOT_FOUND);

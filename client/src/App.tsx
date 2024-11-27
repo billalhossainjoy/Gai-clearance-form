@@ -6,8 +6,14 @@ import NewStudentPage from "./pages/Dashboard/newStudent";
 import AllStudentsPage from "./pages/Dashboard/allStudents";
 import AccountPage from "./pages/Dashboard/account";
 import SettingsPage from "./pages/Dashboard/settings";
+import { useEffect } from "react";
+import ApiClient from "./lib/apiClient";
 
 const App: React.FC = () => {
+  console.log(import.meta.env.VITE_REST_API);
+  useEffect(() => {
+    ApiClient.get("/student?roll=652750").then((res) => console.log(res));
+  }, []);
   return (
     <Routes>
       <Route index element={<ClientLayout />} />
