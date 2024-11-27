@@ -96,6 +96,8 @@ const authSlice = createSlice({
       })
       .addCase(getCurrentAdmin.rejected, (state) => {
         state.isLoading = false;
+        state.isAuthenticated = false;
+        state.authData = null;
       });
   },
 });
