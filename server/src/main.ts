@@ -8,8 +8,8 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(
     cors({
-      origin: '*',
-      credentials: true
+      origin: 'https://gai-clearance-form.vercel.app/',
+      credentials: true,
     }),
   );
   await app.listen(process.env.PORT ?? 3000);
