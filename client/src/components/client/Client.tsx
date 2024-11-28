@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import ClearanceForm from "./ClearanceForm";
-import VerificationForm from "./VerificationForm";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Client: React.FC = () => {
@@ -14,7 +13,7 @@ const Client: React.FC = () => {
 
     if (state === "verificationForm") navigate("/?varification=");
     else setSearchParams({});
-  }, [navigate, state, setSearchParams]);
+  }, [navigate, state, setSearchParams,searchParams]);
   return (
     <Tabs defaultValue={state} onValueChange={setState} className="w-full my-5">
       <TabsList className="w-full">
