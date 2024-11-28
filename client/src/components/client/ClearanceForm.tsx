@@ -10,10 +10,11 @@ import { depertmentOptions, sessionOptions, shiftOptions } from "../constaint";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { fetchStudentInfo } from "@/store/client/client.slice";
 import { useToast } from "@/hooks/use-toast";
+import { Loader } from "lucide-react";
 
 const ClearanceForm: React.FC = () => {
   const { toast } = useToast();
-  const { student, error } = useAppSelector((state) => state.client);
+  const { student, error ,isLoading} = useAppSelector((state) => state.client);
   const dispatch = useAppDispatch();
 
   const form = useForm<StudentSchemaType>({
@@ -34,7 +35,7 @@ const ClearanceForm: React.FC = () => {
   useEffect(() => {
     if (student) {
       toast({
-        title: "Not Found",
+        title: "Congratulations.",
         description: "You are passed, please download you form.",
       });
       form.setValue("registrationNo", student.registrationNo);
@@ -49,7 +50,7 @@ const ClearanceForm: React.FC = () => {
       form.setValue("session", "");
       form.setValue("shift", "FIRST");
     }
-  }, [form, student]);
+  }, [form, student, toast]);
 
   useEffect(() => {
     console.log(error);
@@ -87,6 +88,11 @@ const ClearanceForm: React.FC = () => {
             label="Board Roll"
             placeholder="roll number"
           />
+          {isLoading && (
+            <span className=" mt-3">
+              <Loader className="w-5 h-5 animate-spin" />
+            </span>
+          )}
           <CustomForm<StudentSchemaType>
             name="registrationNo"
             control={form.control}
@@ -130,7 +136,12 @@ const ClearanceForm: React.FC = () => {
             placeholder="select shift"
             disabled
           />
-          <Button disabled={true}>Download</Button>
+          <Button
+            disabled={!student || student?.roll !== form.getValues("roll")}
+          >
+            {" "}
+            Download
+          </Button>
         </Form>
       </form>
     </>

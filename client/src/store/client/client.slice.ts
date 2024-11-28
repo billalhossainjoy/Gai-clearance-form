@@ -37,12 +37,12 @@ const clientSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchStudentInfo.fulfilled, (state, action) => {
-        state.isLoading = true;
+        state.isLoading = false;
         state.student = action.payload;
         state.error = null;
       })
       .addCase(fetchStudentInfo.rejected, (state, action) => {
-        state.isLoading = true;
+        state.isLoading = false;
         state.error = action.payload;
         state.student = null;
       });
