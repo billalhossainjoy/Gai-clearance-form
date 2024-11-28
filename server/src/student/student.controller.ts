@@ -77,8 +77,8 @@ export class StudentController {
     }
   }
 
-  @Get()
-  async getStudentByRoll(@Query('roll') roll: string) {
+  @Get("get/:roll")
+  async getStudentByRoll(@Param('roll') roll: string) {
     try {
       const rollNumber = parseInt(roll, 10);
       return await this.studentService.studentByRoll(rollNumber);

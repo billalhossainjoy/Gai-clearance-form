@@ -27,8 +27,15 @@ const RenderFormField = <T extends FieldValues>({
 }: RenderFeildProps<T>) => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const { inputType, placeholder, icon, label, options, renderSkeleton } =
-    props;
+  const {
+    inputType,
+    placeholder,
+    icon,
+    label,
+    options,
+    renderSkeleton,
+    disabled,
+  } = props;
 
   switch (inputType) {
     case FormFieldType.INPUT:
@@ -36,7 +43,12 @@ const RenderFormField = <T extends FieldValues>({
         <div className="form-field">
           <div className="text-primary">{icon}</div>
           <FormControl>
-            <Input type="text" {...field} placeholder={placeholder} />
+            <Input
+              type="text"
+              {...field}
+              placeholder={placeholder}
+              disabled={disabled}
+            />
           </FormControl>
         </div>
       );
@@ -55,6 +67,7 @@ const RenderFormField = <T extends FieldValues>({
               onWheel={(e) => (e.target as HTMLInputElement).blur()}
               onChange={(e) => field.onChange(Number(e.target.value))}
               placeholder={placeholder}
+              disabled={disabled}
             />
           </FormControl>
         </div>
@@ -65,7 +78,12 @@ const RenderFormField = <T extends FieldValues>({
           <div className="text-primary">{icon}</div>
 
           <FormControl>
-            <Input type="email" {...field} placeholder={placeholder} />
+            <Input
+              type="email"
+              {...field}
+              placeholder={placeholder}
+              disabled={disabled}
+            />
           </FormControl>
         </div>
       );
@@ -78,6 +96,7 @@ const RenderFormField = <T extends FieldValues>({
               type={showPassword ? "text" : "password"}
               {...field}
               placeholder="********"
+              disabled={disabled}
             />
           </FormControl>
           {showPassword ? (
@@ -105,7 +124,11 @@ const RenderFormField = <T extends FieldValues>({
       return (
         <div className="form-field">
           <FormControl>
-            <Textarea {...field} placeholder={placeholder} />
+            <Textarea
+              {...field}
+              placeholder={placeholder}
+              disabled={disabled}
+            />
           </FormControl>
         </div>
       );
@@ -114,7 +137,11 @@ const RenderFormField = <T extends FieldValues>({
         <div className="form-field">
           <div className="text-primary">{icon}</div>
           <FormControl>
-            <Select value={field.value} onValueChange={field.onChange}>
+            <Select
+              value={field.value}
+              onValueChange={field.onChange}
+              disabled={disabled}
+            >
               <SelectTrigger>
                 <SelectValue
                   placeholder={placeholder}
@@ -142,6 +169,7 @@ const RenderFormField = <T extends FieldValues>({
           <Select
             value={JSON.stringify(field.value)}
             onValueChange={(e) => field.onChange(JSON.parse(e))}
+            disabled={disabled}
           >
             <SelectTrigger>
               <SelectValue placeholder={placeholder} />

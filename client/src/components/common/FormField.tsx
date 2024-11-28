@@ -14,6 +14,7 @@ export interface FormFieldProps<T extends FieldValues> {
   icon?: React.ReactNode;
   options?: { id: string; label: string }[];
   multiple?: boolean;
+  disabled?: boolean;
   renderSkeleton?: (
     feild: ControllerRenderProps<T, Path<T>>
   ) => React.ReactNode;
