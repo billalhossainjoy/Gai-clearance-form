@@ -11,10 +11,12 @@ import { useAppDispatch, useAppSelector } from "@/store/store";
 import { fetchStudentInfo } from "@/store/client/client.slice";
 import { useToast } from "@/hooks/use-toast";
 import { Loader } from "lucide-react";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import ClearanceFormPDF from "../clearanceForm/form";
 
 const ClearanceForm: React.FC = () => {
   const { toast } = useToast();
-  const { student, error ,isLoading} = useAppSelector((state) => state.client);
+  const { student, error, isLoading } = useAppSelector((state) => state.client);
   const dispatch = useAppDispatch();
 
   const form = useForm<StudentSchemaType>({
@@ -136,12 +138,18 @@ const ClearanceForm: React.FC = () => {
             placeholder="select shift"
             disabled
           />
-          <Button
-            disabled={!student || student?.roll !== form.getValues("roll")}
-          >
-            {" "}
-            Download
-          </Button>
+          {(!student || student?.roll !== form.getValues("roll")) && (
+            <Button disabled>Download</Button>
+          )}
+          {!student || student.roll !== form.getValues("roll") ? null : (
+            <div>
+              <Button>
+                <PDFDownloadLink document={<ClearanceFormPDF info={student} />}>
+                  Download
+                </PDFDownloadLink>
+              </Button>
+            </div>
+          )}
         </Form>
       </form>
     </>
