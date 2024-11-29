@@ -59,7 +59,7 @@ export class AuthController {
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
         httpOnly: true,
         sameSite: 'none',
-        secure: process.env.NODE_ENV === 'production',
+        secure: true,
       });
       return res.status(HttpStatus.OK).json({ email: req.user.email, token });
     } catch (error) {

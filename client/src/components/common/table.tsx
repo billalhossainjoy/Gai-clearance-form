@@ -2,6 +2,10 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -14,8 +18,8 @@ import {
 } from "../ui/table";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Search } from "lucide-react";
-import { useState } from "react";
+import { ChevronDown, ChevronUp, Search } from "lucide-react";
+
 import {
   Select,
   SelectItem,
@@ -23,6 +27,7 @@ import {
   SelectValue,
   SelectContent,
 } from "../ui/select";
+import { useState } from "react";
 
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -33,51 +38,51 @@ export const DataTable = <TData, TValue>({
   columns,
   data,
 }: Props<TData, TValue>) => {
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
-  console.log(pagination)
 
   const table = useReactTable({
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
-    pageCount: Math.ceil(data.length / pagination.pageSize),
     state: {
       pagination,
+      globalFilter,
+      sorting,
     },
+    onSortingChange: setSorting,
+    onGlobalFilterChange: setGlobalFilter,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
+    manualPagination: false,
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
-
-  const handlePaginate = (skip: number) => {
-      setPagination((prev) => ({
-        ...prev,
-        pageIndex: Math.max(
-          0,
-          Math.min(table.getPageCount() - 1, prev.pageIndex + skip)
-        ),
-      }));
-  };
 
   return (
     <div>
       <div className=" flex justify-end">
-        <div className="flex items-center gap-3 max-w-80 ">
+        <div className="flex items-center gap-3 ">
           <span className="font-semibold">Search:</span>
           <div className="flex items-center gap-3 border rounded pr-3">
             <Input
               type="text"
-              className="focus-visible:ring-0 focus-visible:outline-none shadow-none border-none"
+              className="focus-visible:ring-0 focus-visible:outline-none shadow-none border-none w-480"
+              placeholder="search"
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
             />
             <Search className="text-primary" />
           </div>
           <div>
             <Select
               value={String(pagination.pageSize)}
-              onValueChange={(e) =>
-                setPagination((prev) => ({ ...prev, pageSize: Number(e) }))
+              onValueChange={(value) =>
+                setPagination((prev) => ({ ...prev, pageSize: Number(value) }))
               }
             >
               <SelectTrigger>
@@ -98,13 +103,25 @@ export const DataTable = <TData, TValue>({
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                <TableHead
+                  key={header.id}
+                  className="cursor-pointer select-none"
+                  onClick={header.column.getToggleSortingHandler()}
+                >
+                  <div className="flex gap-2 items-center">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                    {header.column.getIsSorted() === "asc" && (
+                      <ChevronDown className="w-5 h-5" />
+                    )}
+                    {header.column.getIsSorted() === "desc" && (
+                      <ChevronUp className="w-5 h-5" />
+                    )}
+                  </div>
                 </TableHead>
               ))}
             </TableRow>
@@ -133,14 +150,14 @@ export const DataTable = <TData, TValue>({
       <div className="flex justify-between mt-5">
         <div className="flex gap-3">
           <Button
-            onClick={() => handlePaginate(-10)}
+            onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
             Previous
           </Button>
 
           <Button
-            onClick={() => handlePaginate(10)}
+            onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
             next
@@ -148,7 +165,7 @@ export const DataTable = <TData, TValue>({
         </div>
         <div className="">
           <div className="w-full">
-            <span>page {pagination.pageIndex + 1}</span> of{" "}
+            <span>page {table.getState().pagination.pageIndex + 1}</span> of{" "}
             {table.getPageCount()}
           </div>
         </div>

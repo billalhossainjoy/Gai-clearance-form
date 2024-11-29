@@ -66,7 +66,14 @@ const ClearanceForm: React.FC = () => {
       if (typedError.statusCode === 404) {
         toast({
           title: "Not Found",
-          description: "Student not found in the database.",
+          description: error.message as string,
+          variant: "destructive",
+        });
+      }
+      if (typedError.statusCode === 403) {
+        toast({
+          title: "Block",
+          description: error.message as string,
           variant: "destructive",
         });
       }

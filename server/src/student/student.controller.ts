@@ -77,13 +77,19 @@ export class StudentController {
     }
   }
 
-  @Get("get/:roll")
+  @Get('get/:roll')
   async getStudentByRoll(@Param('roll') roll: string) {
     try {
       const rollNumber = parseInt(roll, 10);
-      return await this.studentService.studentByRoll(rollNumber);
+      const student = await this.studentService.studentByRoll(rollNumber);
+
+      if (!student.active)
+        throw new HttpException("Your roll number is blocked.", HttpStatus.FORBIDDEN);
+
+
+      return student
     } catch (error) {
-      throw new HttpException('not found', HttpStatus.NOT_FOUND);
+      throw error
     }
   }
 }

@@ -5,7 +5,9 @@ import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {
+    
+  }
 
   async register(author: Prisma.AuthorCreateInput) {
     try {

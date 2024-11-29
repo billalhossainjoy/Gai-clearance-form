@@ -22,6 +22,7 @@ interface Props {
 }
 
 const NewStudentEntry: React.FC<Props> = ({ student }) => {
+  console.log(student?.active)
   const navigate = useNavigate();
   const { toast } = useToast();
   const dispatch = useAppDispatch();
@@ -34,8 +35,8 @@ const NewStudentEntry: React.FC<Props> = ({ student }) => {
       registrationNo: student?.registrationNo || undefined,
       session: student?.session || undefined,
       shift: student?.shift || undefined,
-      active: student?.active || true,
-      blockReason: student?.name || undefined,
+      active: student?.active ? true :false,
+      blockReason: student?.blockReason || undefined,
     },
   });
 
@@ -156,7 +157,7 @@ const NewStudentEntry: React.FC<Props> = ({ student }) => {
             </div>
           </div>
 
-          <Button>Add Student</Button>
+          <Button>{student ? "Update" : "Add Student"}</Button>
         </Form>
       </form>
     </>

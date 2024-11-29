@@ -35,6 +35,7 @@ const clientSlice = createSlice({
       .addCase(fetchStudentInfo.pending, (state) => {
         state.isLoading = true;
         state.error = null;
+        state.student = null
       })
       .addCase(fetchStudentInfo.fulfilled, (state, action) => {
         state.isLoading = false;
