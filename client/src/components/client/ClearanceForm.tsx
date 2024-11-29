@@ -63,16 +63,9 @@ const ClearanceForm: React.FC = () => {
       "message" in error
     ) {
       const typedError = error as { statusCode: number; message: string };
-      if (typedError.statusCode === 404) {
+      if (typedError.statusCode) {
         toast({
           title: "Not Found",
-          description: error.message as string,
-          variant: "destructive",
-        });
-      }
-      if (typedError.statusCode === 403) {
-        toast({
-          title: "Block",
           description: error.message as string,
           variant: "destructive",
         });
