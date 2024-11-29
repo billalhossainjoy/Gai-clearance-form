@@ -6,7 +6,7 @@ const ClientLayout: React.FC = () => {
     <div className="min-h-screen h-full w-full ">
       <div className="grid grid-cols-1 lg:grid-cols-2">
         <div className=" flex w-full h-full justify-center items-center">
-          <div className="flex h-full justify-center items-center">
+          <div className="flex h-full justify-center items-center w-full mx-10">
             <Client />
           </div>
         </div>

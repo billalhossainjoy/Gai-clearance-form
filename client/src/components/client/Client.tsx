@@ -13,11 +13,14 @@ const Client: React.FC = () => {
 
     if (state === "verificationForm") navigate("/?varification=");
     else setSearchParams({});
-  }, [navigate, state, setSearchParams,searchParams]);
+  }, [navigate, state, setSearchParams, searchParams]);
   return (
     <Tabs defaultValue={state} onValueChange={setState} className="w-full my-5">
-      <TabsList className="w-full">
-        <TabsTrigger value="clearanceForm" className="w-full">
+      <TabsList className="w-full h-full">
+        <TabsTrigger
+          value="clearanceForm"
+          className="w-full text-2xl md:text-lg"
+        >
           Clearance Form
         </TabsTrigger>
       </TabsList>
