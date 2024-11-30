@@ -62,7 +62,7 @@ export class StudentService {
 
       return updatedStudent;
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new HttpException(
         `Error updating student: ${error.message}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -118,14 +118,17 @@ export class StudentService {
       if (!existingStudent)
         throw new HttpException('Student not found. ', HttpStatus.NOT_FOUND);
 
+      if (!existingStudent.active)
+        throw new HttpException(
+          'This roll number is blocked: ' + roll,
+          HttpStatus.FORBIDDEN,
+        );
+
       return await this.prisma.student.findUnique({
         where: { id: existingStudent.id },
       });
     } catch (error) {
-      throw new HttpException(
-        `Error fetching student by roll: ${error.message}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw error
     }
   }
 

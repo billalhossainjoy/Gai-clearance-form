@@ -16,7 +16,7 @@ import ClearanceFormPDF from "../clearanceForm/form";
 
 const ClearanceForm: React.FC = () => {
   const { toast } = useToast();
-  const { student, error, isLoading } = useAppSelector((state) => state.client);
+  const { student, isLoading } = useAppSelector((state) => state.client);
   const dispatch = useAppDispatch();
 
   const form = useForm<StudentSchemaType>({
@@ -30,9 +30,24 @@ const ClearanceForm: React.FC = () => {
   const roll = form.watch("roll");
   useEffect(() => {
     if (roll >= 100000) {
-      dispatch(fetchStudentInfo(String(roll)));
+      dispatch(fetchStudentInfo(String(roll))).then((res) => {
+        if (res.payload.statusCode === 404) {
+          toast({
+            title: "Not Found",
+            description: res.payload.message as string,
+            variant: "destructive",
+          });
+        }
+        else if (res.payload.statusCode === 403) {
+          toast({
+            title: "Blocked",
+            description: res.payload.message as string,
+            variant: "destructive",
+          });
+        }
+      });
     }
-  }, [roll, dispatch]);
+  }, [roll, dispatch, toast]);
 
   useEffect(() => {
     if (student) {
@@ -53,25 +68,6 @@ const ClearanceForm: React.FC = () => {
       form.setValue("shift", "FIRST");
     }
   }, [form, student, toast]);
-
-  useEffect(() => {
-    console.log(error);
-    if (
-      typeof error === "object" &&
-      error !== null &&
-      "statusCode" in error &&
-      "message" in error
-    ) {
-      const typedError = error as { statusCode: number; message: string };
-      if (typedError.statusCode) {
-        toast({
-          title: "Not Found",
-          description: error.message as string,
-          variant: "destructive",
-        });
-      }
-    }
-  }, [error, form, toast]);
 
   return (
     <>
