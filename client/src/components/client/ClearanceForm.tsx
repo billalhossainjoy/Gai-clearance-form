@@ -23,10 +23,6 @@ const ClearanceForm: React.FC = () => {
     resolver: zodResolver(studentSchema),
   });
 
-  const onSubmit = (data: StudentSchemaType) => {
-    console.log(data);
-  };
-
   const roll = form.watch("roll");
   useEffect(() => {
     if (roll >= 100000) {
@@ -37,8 +33,7 @@ const ClearanceForm: React.FC = () => {
             description: res.payload.message as string,
             variant: "destructive",
           });
-        }
-        else if (res.payload.statusCode === 403) {
+        } else if (res.payload.statusCode === 403) {
           toast({
             title: "Blocked",
             description: res.payload.message as string,
@@ -72,7 +67,7 @@ const ClearanceForm: React.FC = () => {
   return (
     <>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={(e) => e.preventDefault()}
         className=" p-6 rounded space-y-3 border"
       >
         <Form {...form}>

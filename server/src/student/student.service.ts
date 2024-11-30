@@ -124,11 +124,9 @@ export class StudentService {
           HttpStatus.FORBIDDEN,
         );
 
-      return await this.prisma.student.findUnique({
-        where: { id: existingStudent.id },
-      });
+      return existingStudent;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
