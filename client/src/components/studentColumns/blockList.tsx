@@ -4,7 +4,7 @@ import StudentActionButton from "../allStudent/list/action";
 export interface Student {
   id: string;
   name: string;
-  technology: string;
+  technology: "PT" | "GD" | "CST";
   roll: number;
   registrationNo: number;
   session: string;
@@ -51,7 +51,7 @@ export const blockListsColumns = [
   column.display({
     id: "action",
     cell: ({ row }) => (
-      <StudentActionButton id={row.original.id} accept deleteAction/>
+      <StudentActionButton id={row.original.id} accept deleteAction />
     ),
   }),
 ];

@@ -4,7 +4,7 @@ import StudentActionButton from "../allStudent/list/action";
 export interface Student {
   id: string;
   name: string;
-  technology: string;
+  technology: "PT" | "GD" | "CST";
   roll: number;
   registrationNo: number;
   session: string;
