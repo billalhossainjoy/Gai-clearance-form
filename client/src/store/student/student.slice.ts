@@ -1,4 +1,4 @@
-import { Student } from "@/components/allStudent/list/columns";
+import { Student } from "@/components/studentColumns/allStudent";
 import ApiClient from "@/lib/apiClient";
 import { StudentSchemaType } from "@/schema/student.schema";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
@@ -46,11 +46,24 @@ export const updateStudent = createAsyncThunk(
     }
   }
 );
+
 export const deleteStudent = createAsyncThunk(
   "/student/remove",
   async (id: string, { rejectWithValue }) => {
     try {
       const res = await ApiClient.delete(`student/remove/${id}`);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const acceptStudent = createAsyncThunk(
+  "/student/accept",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const res = await ApiClient.put(`student/accept/${id}`);
       return res.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
@@ -71,10 +84,33 @@ export const fetchStudent = createAsyncThunk(
 );
 
 export const fetchAllStudent = createAsyncThunk(
-  "/student/all",
+  "/student/all-active-students",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await ApiClient.get(`student/all`);
+      const res = await ApiClient.get(`student/all-active-students`);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const fetchAllBlockedStudent = createAsyncThunk(
+  "/student/all-blocked-students",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await ApiClient.get(`student/all-blocked-students`);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const fetchAllApplicentStudent = createAsyncThunk(
+  "/student/all-applicant-students",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await ApiClient.get(`student/all-applicant-students`);
       return res.data;
     } catch (error: any) {
       return rejectWithValue(error.response.data);
@@ -135,6 +171,19 @@ const studentSlice = createSlice({
         state.isLoading = false;
       });
     builder
+      .addCase(acceptStudent.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(acceptStudent.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.data = state.data.filter(
+          (student) => student.id !== action.payload.id
+        );
+      })
+      .addCase(acceptStudent.rejected, (state) => {
+        state.isLoading = false;
+      });
+    builder
       .addCase(fetchStudent.pending, (state) => {
         state.loader = true;
       })
@@ -154,6 +203,28 @@ const studentSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(fetchAllStudent.rejected, (state) => {
+        state.isLoading = false;
+      });
+    builder
+      .addCase(fetchAllBlockedStudent.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAllBlockedStudent.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.data = action.payload;
+      })
+      .addCase(fetchAllBlockedStudent.rejected, (state) => {
+        state.isLoading = false;
+      });
+    builder
+      .addCase(fetchAllApplicentStudent.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAllApplicentStudent.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.data = action.payload;
+      })
+      .addCase(fetchAllApplicentStudent.rejected, (state) => {
         state.isLoading = false;
       });
   },

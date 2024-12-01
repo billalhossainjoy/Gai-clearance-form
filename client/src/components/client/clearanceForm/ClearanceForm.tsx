@@ -1,18 +1,22 @@
 import { studentSchema, StudentSchemaType } from "@/schema/student.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Form } from "../ui/form";
-import CustomForm from "../common/FormField";
+import { Form } from "../../ui/form";
+import CustomForm from "../../common/FormField";
 import { FormFieldType } from "@/constant";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { useEffect } from "react";
-import { depertmentOptions, sessionOptions, shiftOptions } from "../constaint";
+import {
+  depertmentOptions,
+  sessionOptions,
+  shiftOptions,
+} from "../../constaint";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { fetchStudentInfo } from "@/store/client/client.slice";
 import { useToast } from "@/hooks/use-toast";
 import { Loader } from "lucide-react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import ClearanceFormPDF from "../clearanceForm/form";
+import ClearanceFormPDF from "../../clearanceForm/form";
 
 const ClearanceForm: React.FC = () => {
   const { toast } = useToast();
@@ -36,6 +40,12 @@ const ClearanceForm: React.FC = () => {
         } else if (res.payload.statusCode === 403) {
           toast({
             title: "Blocked",
+            description: res.payload.message as string,
+            variant: "destructive",
+          });
+        } else if (res.payload.statusCode === 406) {
+          toast({
+            title: "Not Accepted",
             description: res.payload.message as string,
             variant: "destructive",
           });

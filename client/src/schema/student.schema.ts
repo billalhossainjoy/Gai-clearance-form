@@ -7,7 +7,7 @@ export const studentSchema = z.object({
   registrationNo: z.number().min(10, "Roll must be minimum 10 digits."),
   session: z.string(),
   shift: z.enum(["FIRST", "SECOND"]),
-  active: z.boolean(),
+  active: z.boolean().optional(),
   blockReason: z.string().optional(),
 });
 

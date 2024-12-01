@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import ClearanceForm from "./ClearanceForm";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import ApplicationForm from "../application/applicationForm";
+import ClearanceForm from "./ClearanceForm";
 
 const Client: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,9 +24,15 @@ const Client: React.FC = () => {
         >
           Clearance Form
         </TabsTrigger>
+        <TabsTrigger value="application" className="w-full text-2xl md:text-lg">
+          Clearance Form
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="clearanceForm">
         <ClearanceForm />
+      </TabsContent>
+      <TabsContent value="application">
+        <ApplicationForm />
       </TabsContent>
     </Tabs>
   );

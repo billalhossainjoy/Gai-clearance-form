@@ -1,6 +1,5 @@
-
 import { createColumnHelper } from "@tanstack/react-table";
-import StudentActionButton from "./action";
+import StudentActionButton from "../allStudent/list/action";
 
 export interface Student {
   id: string;
@@ -15,7 +14,7 @@ export interface Student {
 
 const column = createColumnHelper<Student>();
 
-export const studentColumns = [
+export const blockListsColumns = [
   column.display({
     id: "serial",
     header: "Serial",
@@ -51,6 +50,8 @@ export const studentColumns = [
   }),
   column.display({
     id: "action",
-    cell: ({ row }) => <StudentActionButton id={row.original.id} />,
+    cell: ({ row }) => (
+      <StudentActionButton id={row.original.id} accept deleteAction/>
+    ),
   }),
 ];

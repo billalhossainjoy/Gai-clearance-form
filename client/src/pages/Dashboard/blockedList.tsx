@@ -1,21 +1,20 @@
-
 import ActionDialog from "@/components/allStudent/updateAndDelete";
 import { DataTable } from "@/components/common/table";
 import {
-  allStudentColumn,
+  blockListsColumns,
   Student,
-} from "@/components/studentColumns/allStudent";
+} from "@/components/studentColumns/blockList";
 
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { fetchAllStudent } from "@/store/student/student.slice";
+import { fetchAllBlockedStudent } from "@/store/student/student.slice";
 import { useEffect } from "react";
 
-const AllStudentsPage: React.FC = () => {
+const BlockLists: React.FC = () => {
   const { data } = useAppSelector((state) => state.student);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchAllStudent());
+    dispatch(fetchAllBlockedStudent());
   }, [dispatch]);
 
   return (
@@ -24,13 +23,13 @@ const AllStudentsPage: React.FC = () => {
         <h1 className="text-3xl font-bold text-foreground mb-4">Students</h1>
         <div className="bg-secondary p-6 rounded space-y-3 border">
           <h1 className="text-xl font-semibold text-foreground">
-            All passed students.
+            All blocked student.
           </h1>
-          <DataTable<Student, any> columns={allStudentColumn} data={data} />
+          <DataTable<Student, any> columns={blockListsColumns} data={data} />
           <ActionDialog />
         </div>
       </div>
     </div>
   );
 };
-export default AllStudentsPage;
+export default BlockLists;

@@ -8,7 +8,6 @@ import {
   Param,
   Post,
   Put,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
@@ -57,13 +56,42 @@ export class StudentController {
     }
   }
 
-  @Get('all')
+  @Put('accept/:id')
   @UseGuards(AuthGuard('jwt'))
-  async getStudents() {
+  acceptStudent(@Param('id') id: string) {
+    try {
+      return this.studentService.acceptStudent(id);
+    } catch (error) {
+      throw new HttpException('delete Failed', HttpStatus.EXPECTATION_FAILED);
+    }
+  }
+
+  @Get('all-active-students')
+  @UseGuards(AuthGuard('jwt'))
+  async getActiveStudents() {
     try {
       return await this.studentService.students();
     } catch (error) {
       throw new HttpException('fetch failed', HttpStatus.EXPECTATION_FAILED);
+    }
+  }
+
+  @Get('all-blocked-students')
+  @UseGuards(AuthGuard('jwt'))
+  async getBlockedStudents() {
+    try {
+      return await this.studentService.blockedStudents();
+    } catch (error) {
+      throw new HttpException('fetch failed', HttpStatus.EXPECTATION_FAILED);
+    }
+  }
+  @Get('all-applicant-students')
+  @UseGuards(AuthGuard('jwt'))
+  async getAllApplicants() {
+    try {
+      return await this.studentService.applicantStudents();
+    } catch (error) {
+      throw error;
     }
   }
 
@@ -86,6 +114,17 @@ export class StudentController {
       return student;
     } catch (error) {
       throw error;
+    }
+  }
+
+  @Post('apply')
+  applicationStudent(@Body() data: Prisma.StudentCreateInput) {
+    try {
+      const student = this.studentService.applicationStudent(data);
+      return student;
+    } catch (error) {
+      console.log(error);
+      throw new HttpException('apply failed', HttpStatus.EXPECTATION_FAILED);
     }
   }
 }

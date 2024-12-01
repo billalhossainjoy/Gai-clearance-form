@@ -6,29 +6,36 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { deleteStudent, fetchStudent } from "@/store/student/student.slice";
+import { acceptStudent, deleteStudent, fetchStudent } from "@/store/student/student.slice";
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import NewStudentEntry from "../student/studentEntryForm";
 import { Loader } from "lucide-react";
 
-const UpdateDeleteDialog: React.FC = () => {
-	const dispatch = useAppDispatch();
-	const {loader, student} = useAppSelector(state => state.student);
+const ActionDialog: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { loader, student } = useAppSelector((state) => state.student);
   const [updateDialog, setUpdateDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const [acceptDialog, setAcceptedDialog] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const deleteHandler = () => {
     dispatch(deleteStudent(searchParams.get("delete") ?? "")).then((res) => {
-      if (res.payload.id) navigate("/admin/all-student");
+      if (res.payload.id) setSearchParams({});
+    });
+  };
+
+  const acceptHandler = () => {
+    dispatch(acceptStudent(searchParams.get("accept") ?? "")).then((res) => {
+      if (res.payload.id) setSearchParams({});
     });
   };
 
   useEffect(() => {
     const updateParam = searchParams.get("update");
     const deleteParam = searchParams.get("delete");
+    const acceptParam = searchParams.get("accept");
 
     if (updateParam) {
       setUpdateDialog(true);
@@ -42,13 +49,16 @@ const UpdateDeleteDialog: React.FC = () => {
     } else {
       setDeleteDialog(false);
     }
+
+    if (acceptParam) {
+      setAcceptedDialog(true);
+    } else {
+      setAcceptedDialog(false);
+    }
   }, [searchParams, dispatch]);
   return (
     <div>
-      <Dialog
-        open={updateDialog}
-        onOpenChange={() => navigate("/admin/all-student")}
-      >
+      <Dialog open={updateDialog} onOpenChange={() => setSearchParams({})}>
         <DialogContent>
           <DialogTitle className="text-destructive">Update</DialogTitle>
           <DialogDescription>
@@ -62,10 +72,7 @@ const UpdateDeleteDialog: React.FC = () => {
           </DialogDescription>
         </DialogContent>
       </Dialog>
-      <Dialog
-        open={deleteDialog}
-        onOpenChange={() => navigate("/admin/all-student")}
-      >
+      <Dialog open={deleteDialog} onOpenChange={() => setSearchParams({})}>
         <DialogContent>
           <DialogTitle className="text-destructive">Delete</DialogTitle>
           <DialogDescription>
@@ -73,10 +80,7 @@ const UpdateDeleteDialog: React.FC = () => {
               Are you sure to delete to this student
             </h1>
             <div className="w-full text-end">
-              <Button
-                variant="ghost"
-                onClick={() => navigate("/admin/account")}
-              >
+              <Button variant="ghost" onClick={() => setSearchParams({})}>
                 Cancel
               </Button>
               <Button
@@ -90,7 +94,29 @@ const UpdateDeleteDialog: React.FC = () => {
           </DialogDescription>
         </DialogContent>
       </Dialog>
+      <Dialog open={acceptDialog} onOpenChange={() => setSearchParams({})}>
+        <DialogContent>
+          <DialogTitle className="text-primary">Accept</DialogTitle>
+          <DialogDescription>
+            <h1 className=" my-3 text-lg text-black font-semibold">
+              Are you sure to delete to this student
+            </h1>
+            <div className="w-full text-end">
+              <Button variant="ghost" onClick={() => setSearchParams({})}>
+                Cancel
+              </Button>
+              <Button
+                variant="outline"
+                className="border-sky-500 text-sky-500 ml-3"
+                onClick={() => acceptHandler()}
+              >
+                Accept
+              </Button>
+            </div>
+          </DialogDescription>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
-export default UpdateDeleteDialog;
+export default ActionDialog;

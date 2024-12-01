@@ -1,4 +1,4 @@
-import Client from "@/components/client/Client";
+import Client from "@/components/client/clearanceForm/Client";
 import collageImg from "/collage.png";
 
 const ClientLayout: React.FC = () => {
@@ -10,7 +10,7 @@ const ClientLayout: React.FC = () => {
             <Client />
           </div>
         </div>
-        <div className=" h-screen w-full hidden lg:block  ">
+        <div className=" h-screen w-full hidden lg:block">
           <img
             src={collageImg}
             alt=""

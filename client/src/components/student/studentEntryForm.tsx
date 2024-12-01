@@ -12,20 +12,23 @@ import {
   sessionOptions,
   shiftOptions,
 } from "@/components/constaint";
-import { useAppDispatch } from "@/store/store";
+import { useAppDispatch, useAppSelector } from "@/store/store";
 import { addNewStudent, updateStudent } from "@/store/student/student.slice";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { Loader } from "lucide-react";
 
 interface Props {
   student?: (StudentSchemaType & { id: string }) | null;
 }
 
 const NewStudentEntry: React.FC<Props> = ({ student }) => {
-  console.log(student?.active);
-  const navigate = useNavigate();
+  const {isLoading} = useAppSelector(state => state.student);
+
+
   const { toast } = useToast();
   const dispatch = useAppDispatch();
+  const [,setSearchParams] = useSearchParams();
   const form = useForm<StudentSchemaType>({
     resolver: zodResolver(studentSchema),
     defaultValues: {
@@ -35,7 +38,7 @@ const NewStudentEntry: React.FC<Props> = ({ student }) => {
       registrationNo: student?.registrationNo || undefined,
       session: student?.session || undefined,
       shift: student?.shift || undefined,
-      active: student?.active !== true ? false : true,
+      active: student && (student?.active !== true ? false : true) || true,
       blockReason: student?.blockReason || undefined,
     },
   });
@@ -64,7 +67,7 @@ const NewStudentEntry: React.FC<Props> = ({ student }) => {
             title: "Student Updated",
             description: res.payload.name + " updated successfully.",
           });
-          navigate("/admin/all-student");
+          setSearchParams({});
         }
         if (res.payload.message) {
           toast({
@@ -157,7 +160,7 @@ const NewStudentEntry: React.FC<Props> = ({ student }) => {
             </div>
           </div>
 
-          <Button>{student ? "Update" : "Add Student"}</Button>
+          <Button disabled={isLoading}>{!isLoading ? (student ? "Update" : "Add Student") : <Loader className=" animate-spin "/>}</Button>
         </Form>
       </form>
     </>

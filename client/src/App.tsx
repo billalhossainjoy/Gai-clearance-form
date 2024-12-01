@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from "./store/store";
 import { getCurrentAdmin } from "./store/auth/auth.slice";
 import { Loader } from "lucide-react";
 import Protected from "./components/auth/protected";
+import BlockLists from "./pages/Dashboard/blockedList";
+import ApplicantsPage from "./pages/Dashboard/applicants";
 
 const App: React.FC = () => {
   const { isLoading, authData, isAuthenticated } = useAppSelector(
@@ -58,6 +60,8 @@ const App: React.FC = () => {
           <Route index element={<NewStudentPage />} />
           <Route path="/admin/all-student" element={<AllStudentsPage />} />
           <Route path="/admin/account" element={<AccountPage />} />
+          <Route path="/admin/blocked" element={<BlockLists />} />
+          <Route path="/admin/applicants" element={<ApplicantsPage />} />
           <Route path="/admin/settings" element={<SettingsPage />} />
         </Route>
       </Routes>

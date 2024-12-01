@@ -1,11 +1,12 @@
 import { Student } from "@/components/allStudent/list/columns";
 import ApiClient from "@/lib/apiClient";
+import { StudentSchemaType } from "@/schema/student.schema";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 interface InitialState {
   isLoading: boolean;
   student: Student | null;
-  error: unknown
+  error: unknown;
 }
 
 const initialState: InitialState = {
@@ -26,6 +27,18 @@ export const fetchStudentInfo = createAsyncThunk(
   }
 );
 
+export const applyStudent = createAsyncThunk(
+  "/student/apply",
+  async (data: StudentSchemaType, { rejectWithValue }) => {
+    try {
+      const res = await ApiClient.post(`student/apply`, data);
+      return res.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const clientSlice = createSlice({
   name: "client",
   initialState,
@@ -35,7 +48,7 @@ const clientSlice = createSlice({
       .addCase(fetchStudentInfo.pending, (state) => {
         state.isLoading = true;
         state.error = null;
-        state.student = null
+        state.student = null;
       })
       .addCase(fetchStudentInfo.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -46,6 +59,18 @@ const clientSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
         state.student = null;
+      });
+    builder
+      .addCase(applyStudent.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+        state.student = null;
+      })
+      .addCase(applyStudent.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(applyStudent.rejected, (state) => {
+        state.isLoading = false;
       });
   },
 });
