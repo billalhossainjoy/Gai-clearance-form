@@ -42,7 +42,7 @@ export class StudentController {
       const student = this.studentService.updateStudent(id, data);
       return student;
     } catch (error) {
-      throw new HttpException('update failed', HttpStatus.EXPECTATION_FAILED);
+      throw new HttpException('update failed.', HttpStatus.EXPECTATION_FAILED);
     }
   }
 
@@ -52,7 +52,7 @@ export class StudentController {
     try {
       return this.studentService.deleteStudent(id);
     } catch (error) {
-      throw new HttpException('delete Failed', HttpStatus.EXPECTATION_FAILED);
+      throw new HttpException('delete Failed.', HttpStatus.EXPECTATION_FAILED);
     }
   }
 
