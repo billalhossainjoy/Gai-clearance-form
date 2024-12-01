@@ -25,7 +25,7 @@ const Client: React.FC = () => {
           Clearance Form
         </TabsTrigger>
         <TabsTrigger value="application" className="w-full text-2xl md:text-lg">
-          Clearance Form
+          Application
         </TabsTrigger>
       </TabsList>
       <TabsContent value="clearanceForm">
