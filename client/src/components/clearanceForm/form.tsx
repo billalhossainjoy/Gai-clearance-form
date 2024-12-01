@@ -3,19 +3,18 @@ import { Document, Font, Image, Page, Text, View } from "@react-pdf/renderer";
 import { depertmentDataOptions as depertment } from "./form.data";
 import { styles } from "./style";
 import { Student } from "../studentColumns/allStudent";
+
 Font.register({
   family: "Bangla",
   src: font,
 });
 
-interface Props {
-  info: Student
+interface InfoProps {
+  info: Student;
 }
 
-const ClearanceFormPDF: React.FC<Props> = ({ info }) => {
+const ClearanceForm: React.FC<InfoProps> = ({ info }) => {
   const fullUrl = `${window.location.origin}${location.pathname}${location.search}`;
-
-  console.log(info)
 
   return (
     <Document>
@@ -126,16 +125,57 @@ const ClearanceFormPDF: React.FC<Props> = ({ info }) => {
                     <Text style={styles.tableCell}>{dept.depertment}</Text>
                   </View>
                   <View style={styles.tableColSign}>
-                    <Text style={styles.tableCell}>{""}</Text>
-                  </View>
-                  <View style={styles.tableColSign}>
-                    <Text style={styles.tableCell}>{""}</Text>
+                    <View style={styles.imageContainer}>
+                      {dept.signeture[0][0]?.includes(info.technology) &&
+                        (info.shift === "FIRST" ? (
+                          dept.signeture[0][1][0] ? (
+                            <Image
+                              src={dept.signeture[0][1][0]}
+                              style={styles.image}
+                            />
+                          ) : null
+                        ) : dept.signeture[0][1][1] ? (
+                          <Image
+                            src={dept.signeture[0][1][1]}
+                            style={styles.image}
+                          />
+                        ) : null)}
+                    </View>
                   </View>
                   <View style={styles.tableColSign}>
                     <View style={styles.imageContainer}>
-                      {dept.signeture ? (
-                        <Image src={dept.signeture[2]} style={styles.image} />
-                      ) : null}
+                      {dept.signeture[1][0]?.includes(info.technology) &&
+                        (info.shift === "FIRST" ? (
+                          dept.signeture[1][1][0] ? (
+                            <Image
+                              src={dept.signeture[1][1][0]}
+                              style={styles.image}
+                            />
+                          ) : null
+                        ) : dept.signeture[1][1][1] ? (
+                          <Image
+                            src={dept.signeture[1][1][1]}
+                            style={styles.image}
+                          />
+                        ) : null)}
+                    </View>
+                  </View>
+                  <View style={styles.tableColSign}>
+                    <View style={styles.imageContainer}>
+                      {dept.signeture[2][0]?.includes(info.technology) &&
+                        (info.shift === "FIRST" ? (
+                          dept.signeture[2][1][0] ? (
+                            <Image
+                              src={dept.signeture[2][1][0]}
+                              style={styles.image}
+                            />
+                          ) : null
+                        ) : dept.signeture[2][1][1] ? (
+                          <Image
+                            src={dept.signeture[2][1][1]}
+                            style={styles.image}
+                          />
+                        ) : null)}
                     </View>
                   </View>
                 </View>
@@ -186,4 +226,4 @@ const ClearanceFormPDF: React.FC<Props> = ({ info }) => {
   );
 };
 
-export default ClearanceFormPDF;
+export default ClearanceForm;

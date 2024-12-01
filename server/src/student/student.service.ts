@@ -235,7 +235,9 @@ export class StudentService {
   async applicantStudents() {
     try {
       return await this.prisma.student.findMany({
-       
+        where: {
+          accepted: false,
+        },
       });
     } catch (error) {
       throw new HttpException(
