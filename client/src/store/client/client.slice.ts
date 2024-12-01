@@ -1,4 +1,4 @@
-import { Student } from "@/components/allStudent/list/columns";
+import { Student } from "@/components/studentColumns/allStudent";
 import ApiClient from "@/lib/apiClient";
 import { StudentSchemaType } from "@/schema/student.schema";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";

@@ -82,7 +82,7 @@ const ClearanceForm: React.FC = () => {
       >
         <Form {...form}>
           <h1 className="text-xl font-semibold text-foreground">
-            Fill already passed student information.
+            Passed student clearance from download.
           </h1>
           <CustomForm<StudentSchemaType>
             name="roll"

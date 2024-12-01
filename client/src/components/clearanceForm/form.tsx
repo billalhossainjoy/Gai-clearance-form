@@ -2,7 +2,7 @@ import font from "../../assets/noto.ttf";
 import { Document, Font, Image, Page, Text, View } from "@react-pdf/renderer";
 import { depertmentDataOptions as depertment } from "./form.data";
 import { styles } from "./style";
-import { Student } from "../allStudent/list/columns";
+import { Student } from "../studentColumns/allStudent";
 Font.register({
   family: "Bangla",
   src: font,
