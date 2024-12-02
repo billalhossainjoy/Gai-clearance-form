@@ -1,4 +1,3 @@
-
 import ActionDialog from "@/components/allStudent/updateAndDelete";
 import { DataTable } from "@/components/common/table";
 import {
@@ -11,7 +10,7 @@ import { fetchAllStudent } from "@/store/student/student.slice";
 import { useEffect } from "react";
 
 const AllStudentsPage: React.FC = () => {
-  const { data } = useAppSelector((state) => state.student);
+  const { data, isLoading } = useAppSelector((state) => state.student);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -26,7 +25,11 @@ const AllStudentsPage: React.FC = () => {
           <h1 className="text-xl font-semibold text-foreground">
             All passed students.
           </h1>
-          <DataTable<Student, any> columns={allStudentColumn} data={data} />
+          <DataTable<Student, any>
+            columns={allStudentColumn}
+            data={data}
+            loading={isLoading}
+          />
           <ActionDialog />
         </div>
       </div>

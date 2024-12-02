@@ -18,7 +18,7 @@ import {
 } from "../ui/table";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { ChevronDown, ChevronUp, Search } from "lucide-react";
+import { ChevronDown, ChevronUp, Loader, Search } from "lucide-react";
 
 import {
   Select,
@@ -32,11 +32,13 @@ import { useState } from "react";
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  loading?: boolean;
 }
 
 export const DataTable = <TData, TValue>({
   columns,
   data,
+  loading,
 }: Props<TData, TValue>) => {
   const [globalFilter, setGlobalFilter] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -62,6 +64,15 @@ export const DataTable = <TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+
+  if (loading)
+    return (
+      <div className="flex w-full h-40 p-5 justify-center items-center">
+        <div>
+          <Loader className="animate-spin" />
+        </div>
+      </div>
+    );
 
   return (
     <div>
@@ -140,7 +151,7 @@ export const DataTable = <TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={4} className=" text-center">
+              <TableCell colSpan={5} className=" text-center">
                 No results.
               </TableCell>
             </TableRow>

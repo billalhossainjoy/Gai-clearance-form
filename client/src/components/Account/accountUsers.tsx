@@ -14,6 +14,7 @@ import { Button } from "../ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 const AllAccountAdmins: React.FC = () => {
+  const { isLoading } = useAppSelector((state) => state.admin);
   const { toast } = useToast();
   const navigate = useNavigate();
   const [deleteDialog, setDeleteDialog] = useState(false);
@@ -45,7 +46,11 @@ const AllAccountAdmins: React.FC = () => {
 
   return (
     <div>
-      <DataTable<AccountUsers, any> data={data} columns={accountUsersColumns} />
+      <DataTable<AccountUsers, any>
+        data={data}
+        columns={accountUsersColumns}
+        loading={isLoading}
+      />
       <Dialog
         open={deleteDialog}
         onOpenChange={() => navigate("/admin/account")}

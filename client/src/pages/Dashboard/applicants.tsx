@@ -9,7 +9,7 @@ import { fetchAllApplicentStudent } from "@/store/student/student.slice";
 import { useEffect } from "react";
 
 const ApplicantsPage: React.FC = () => {
-  const { data } = useAppSelector((state) => state.student);
+  const { data,isLoading } = useAppSelector((state) => state.student);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -24,7 +24,11 @@ const ApplicantsPage: React.FC = () => {
           <h1 className="text-xl font-semibold text-foreground">
             All applicants.
           </h1>
-          <DataTable<Student, any> columns={applicantsColumns} data={data} />
+          <DataTable<Student, any>
+            columns={applicantsColumns}
+            data={data}
+            loading={isLoading}
+          />
           <ActionDialog />
         </div>
       </div>

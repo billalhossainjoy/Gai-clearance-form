@@ -10,7 +10,7 @@ import { fetchAllBlockedStudent } from "@/store/student/student.slice";
 import { useEffect } from "react";
 
 const BlockLists: React.FC = () => {
-  const { data } = useAppSelector((state) => state.student);
+  const { data, isLoading } = useAppSelector((state) => state.student);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -25,7 +25,11 @@ const BlockLists: React.FC = () => {
           <h1 className="text-xl font-semibold text-foreground">
             All blocked student.
           </h1>
-          <DataTable<Student, any> columns={blockListsColumns} data={data} />
+          <DataTable<Student, any>
+            columns={blockListsColumns}
+            data={data}
+            loading={isLoading}
+          />
           <ActionDialog />
         </div>
       </div>
