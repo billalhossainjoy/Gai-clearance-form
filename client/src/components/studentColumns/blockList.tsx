@@ -51,7 +51,7 @@ export const blockListsColumns = [
   column.display({
     id: "action",
     cell: ({ row }) => (
-      <StudentActionButton id={row.original.id} accept deleteAction />
+      <StudentActionButton id={row.original.id} update deleteAction />
     ),
   }),
 ];
