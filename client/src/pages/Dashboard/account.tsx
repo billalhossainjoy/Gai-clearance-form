@@ -42,7 +42,7 @@ const AccountPage: React.FC = () => {
   return (
     <div>
       <div className="container mx-auto px-4 py-5">
-        <h1 className="text-3xl font-bold text-foreground mb-4">Student</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-4">Add new admin</h1>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="bg-secondary p-6 rounded space-y-3 border"
@@ -81,10 +81,10 @@ const AccountPage: React.FC = () => {
           </Form>
         </form>
         <div className="mt-3">
-          <h1 className="text-3xl font-bold text-foreground mb-4">Students</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-4">Admins</h1>
           <div className="bg-secondary p-6 rounded space-y-3 border">
             <h1 className="text-xl font-semibold text-foreground">
-              All passed students.
+              Admin lists.
             </h1>
             <AllAccountAdmins />
           </div>
