@@ -39,7 +39,7 @@ export class AuthController {
         expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
         httpOnly: true,
         secure: true,
-        sameSite:"none",
+        sameSite: 'none',
       });
       return res.status(HttpStatus.CREATED).json({
         ...newAuthor,
@@ -71,7 +71,12 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt'))
   logout(@Req() req: Request, @Res() res: Response) {
     try {
-      res.clearCookie('token');
+      res.clearCookie('token', {
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+      });
       return res.status(HttpStatus.OK).json({ message: 'Logged out' });
     } catch (error) {
       throw new HttpException('logout Failed', HttpStatus.EXPECTATION_FAILED);
