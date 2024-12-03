@@ -9,8 +9,7 @@ async function bootstrap() {
   app.use(
     cors({
       origin: [
-        'https://gai-clearance-form.vercel.app',
-        'http://localhost:5173',
+        'https://gai-clearance-form.vercel.app'
       ],
       credentials: true,
     }),
