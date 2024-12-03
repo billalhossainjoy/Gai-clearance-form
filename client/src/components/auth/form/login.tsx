@@ -23,7 +23,7 @@ const LoginForm: React.FC = () => {
 
   const onSubmit = async (data: LoginSchemaType) => {
     dispatch(loginAdmin(data)).then((res) => {
-      if (res.payload.email === data.identifier) {
+      if (res.payload.email && res.payload.email === data.identifier) {
         toast({
           title: "Login successfully",
         });
