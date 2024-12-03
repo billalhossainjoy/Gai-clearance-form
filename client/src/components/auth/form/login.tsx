@@ -23,7 +23,7 @@ const LoginForm: React.FC = () => {
 
   const onSubmit = async (data: LoginSchemaType) => {
     dispatch(loginAdmin(data)).then((res) => {
-      if (res.payload.email && res.payload.email === data.identifier) {
+      if (res.payload && res.payload.email && res.payload.email === data.identifier) {
         toast({
           title: "Login successfully",
         });
@@ -33,7 +33,7 @@ const LoginForm: React.FC = () => {
           }
         });
       }
-      if (res.payload.statusCode >= 400) {
+      if (res.payload && res.payload.statusCode >= 400) {
         toast({
           title: "Login Failed",
           description: res.payload.message.split(":")[1],
